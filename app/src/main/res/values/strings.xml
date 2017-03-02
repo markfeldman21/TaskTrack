@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Task Track</string>
+    
+    <!--FRAGMENT WIDGETS-->
+    <string name="button_calendar">Calendar</string>
+    <string name="button_tasks">Tasks</string>
+    <string name="button_contacts">Contacts</string>
+
+    <!--Temp String-->
+    <string name="home_screen_calendar">Calendar</string>
+    <string name="home_screen_tasks">Tasks</string>
+    <string name="home_screen_contacts">Contacts</string>
+
+</resources>
