@@ -6,6 +6,22 @@
     <string name="button_tasks">Tasks</string>
     <string name="button_contacts">Contacts</string>
 
+    <!--DRAWER-->
+    <string-array name="navigation_drawer_items">
+        <item>Home</item>
+        <item>Calendar</item>
+        <item>Contacts</item>
+        <item>Tasks</item>
+    </string-array>
+    <string name="drawer_open">Drawer Opened</string>
+    <string name="drawer_close">Drawer Closed</string>
+
+    <!--FRAGMENT TITLES-->
+    <string name="fragment_cal_title">CALENDAR</string>
+    <string name="fragment_home_title">HOME</string>
+    <string name="fragment_task_title">TASKS</string>
+    <string name="fragment_contacts_title">CONTACTS</string>
+
     <!--Temp String-->
     <string name="home_screen_calendar">Calendar</string>
     <string name="home_screen_tasks">Tasks</string>
