@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -32,10 +33,15 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
         setContentView(R.layout.activity_main);
         selectedFragment = new Home();
         if (savedInstanceState==null){
+            title  = getString(R.string.fragment_home_title);
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container,selectedFragment)
+                    .addToBackStack(title.toString())
                     .commit();
+            if (getSupportActionBar()!=null){
+                getSupportActionBar().setTitle(title);
+            }
         }
         title = drawerTitle = getTitle();
         String[] drawerItems = getResources().getStringArray(R.array.navigation_drawer_items);
@@ -87,14 +93,6 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-        // If the nav drawer is open, hide action items related to the content view
-        //boolean drawerOpen = drawerLayout.isDrawerOpen(listView);
-        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-        return super.onPrepareOptionsMenu(menu);
-    }
-
-    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case android.R.id.home:{
@@ -110,28 +108,49 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
     }
 
     @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        int count = this.getSupportFragmentManager().getBackStackEntryCount();
+        if(count==0){
+            this.finish();
+        }else if (count>0){
+            title = getSupportFragmentManager().getBackStackEntryAt(count-1).getName();
+            if (getSupportActionBar()!=null){
+                getSupportActionBar().setTitle(title);
+            }
+        }
+    }
+
+    @Override
     public void buttonClicked(View v) {
         int id = v.getId();
         switch (id){
             case (R.id.cal_button):{
                 selectedFragment = new Calendar();
+                title = getString(R.string.fragment_cal_title);
                 break;
             }
             case (R.id.tasks_button):{
                 selectedFragment = new Tasks();
+                title = getString(R.string.fragment_task_title);
                 break;
             }
             case (R.id.contacts_button):{
                 selectedFragment = new Contacts();
+                title = getString(R.string.fragment_contacts_title);
                 break;
             }
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,selectedFragment)
-                .addToBackStack(null)
+                .addToBackStack(title.toString())
                 .commit();
+
+        if (getSupportActionBar()!=null){
+            getSupportActionBar().setTitle(title);
+        }
     }
-    class DrawerItemClickListener implements ListView.OnItemClickListener {
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             selectItem(position);
@@ -162,7 +181,7 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
             }
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container,selectedFragment)
-                    .addToBackStack(null)
+                    .addToBackStack(title.toString())
                     .commit();
 
             if (getSupportActionBar()!=null){
@@ -171,6 +190,4 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
             drawerLayout.closeDrawer(listView);
         }
     }
-
-
 }
