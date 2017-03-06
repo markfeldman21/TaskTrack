@@ -7,6 +7,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,26 +25,35 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private CharSequence drawerTitle;
-    private CharSequence title;
+    private String title;
     private ListView listView;
+    private final String INSTANCE_STATE_SAVE_TITLE = "save_title";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         selectedFragment = new Home();
         if (savedInstanceState==null){
             title  = getString(R.string.fragment_home_title);
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container,selectedFragment)
-                    .addToBackStack(title.toString())
+                    .addToBackStack(title)
                     .commit();
             if (getSupportActionBar()!=null){
                 getSupportActionBar().setTitle(title);
             }
+        }else{
+            title = savedInstanceState.getString(INSTANCE_STATE_SAVE_TITLE);
+            if (getSupportActionBar()!=null){
+                getSupportActionBar().setTitle(title);
+            }
         }
-        title = drawerTitle = getTitle();
+        drawerTitle = getTitle();
+        title = getTitle().toString();
         String[] drawerItems = getResources().getStringArray(R.array.navigation_drawer_items);
         drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
         listView = (ListView)findViewById(R.id.drawer_list);
@@ -72,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
         };
         drawerLayout.addDrawerListener(drawerToggle);
         if (getSupportActionBar()!=null){
-            getSupportActionBar().setLogo(R.drawable.ic_action_expand);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             getSupportActionBar().setHomeButtonEnabled(true);
         }
@@ -105,6 +114,12 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
             }
             default:return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putString(INSTANCE_STATE_SAVE_TITLE, title);
     }
 
     @Override
@@ -143,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
         }
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container,selectedFragment)
-                .addToBackStack(title.toString())
+                .addToBackStack(title)
                 .commit();
 
         if (getSupportActionBar()!=null){
@@ -181,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
             }
             FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
             ft.replace(R.id.container,selectedFragment)
-                    .addToBackStack(title.toString())
+                    .addToBackStack(title)
                     .commit();
 
             if (getSupportActionBar()!=null){

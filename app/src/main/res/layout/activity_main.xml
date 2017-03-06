@@ -5,6 +5,17 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="50dp"
+        android:layout_width="match_parent" />
+
+
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
@@ -16,9 +27,12 @@
         tools:context="com.markfeldman.tasktrack.MainActivity">
     </FrameLayout>
 
+    </LinearLayout>
+
     <ListView android:id="@+id/drawer_list"
         android:layout_width="240dp"
         android:layout_height="match_parent"
+        android:layout_marginTop="50dp"
         android:layout_gravity="start"
         android:choiceMode="singleChoice"
         android:divider="@android:color/transparent"
