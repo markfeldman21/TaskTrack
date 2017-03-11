@@ -7,12 +7,6 @@
     <string name="button_contacts">Contacts</string>
 
     <!--DRAWER-->
-    <string-array name="navigation_drawer_items">
-        <item>Home</item>
-        <item>Calendar</item>
-        <item>Contacts</item>
-        <item>Tasks</item>
-    </string-array>
     <string name="drawer_open">Drawer Opened</string>
     <string name="drawer_close">Drawer Closed</string>
 

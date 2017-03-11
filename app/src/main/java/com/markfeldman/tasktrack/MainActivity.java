@@ -1,120 +1,82 @@
 package com.markfeldman.tasktrack;
 
 import android.content.res.Configuration;
+import android.support.annotation.NonNull;
+import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.TableLayout;
+
 import com.markfeldman.tasktrack.fragments.Calendar;
 import com.markfeldman.tasktrack.fragments.Contacts;
 import com.markfeldman.tasktrack.fragments.Home;
 import com.markfeldman.tasktrack.fragments.Tasks;
+import com.markfeldman.tasktrack.utilities.ViewPagerAdapter;
 
-public class MainActivity extends AppCompatActivity implements Home.onFragmentClicked {
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public class MainActivity extends AppCompatActivity {
     private Fragment selectedFragment;
-    private DrawerLayout drawerLayout;
-    private ActionBarDrawerToggle drawerToggle;
-    private CharSequence drawerTitle;
+    private CollapsingToolbarLayout collapsingToolbarLayout;
     private String title;
-    private ListView listView;
     private final String INSTANCE_STATE_SAVE_TITLE = "save_title";
+    private ArrayList<Fragment> fragments = new ArrayList<>();
+    private ArrayList<String> titles = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
+
+        fragments.addAll(Arrays.asList(new Tasks(),new Calendar(),new Contacts()));
+        titles.addAll(Arrays.asList(getResources().getString(R.string.fragment_task_title),
+                getResources().getString(R.string.fragment_cal_title),getResources().getString(R.string.fragment_contacts_title)));
+        TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
+        ViewPager viewPager = (ViewPager)findViewById(R.id.container);
+        ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments,titles);
+        viewPager.setAdapter(viewPagerAdapter);
+        viewPager.setCurrentItem(1);
+        tabLayout.setupWithViewPager(viewPager);
+
+
+
         selectedFragment = new Home();
         if (savedInstanceState==null){
             title  = getString(R.string.fragment_home_title);
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container,selectedFragment)
-                    .addToBackStack(title)
+                    .addToBackStack(title)//WORKS HERE
                     .commit();
+
             if (getSupportActionBar()!=null){
-                getSupportActionBar().setTitle(title);
+                getSupportActionBar().setDisplayShowTitleEnabled(true);
             }
         }else{
-            title = savedInstanceState.getString(INSTANCE_STATE_SAVE_TITLE);
             if (getSupportActionBar()!=null){
-                getSupportActionBar().setTitle(title);
+                getSupportActionBar().setDisplayShowTitleEnabled(false);
             }
         }
-        drawerTitle = getTitle();
         title = getTitle().toString();
-        String[] drawerItems = getResources().getStringArray(R.array.navigation_drawer_items);
-        drawerLayout = (DrawerLayout)findViewById(R.id.drawer_layout);
-        listView = (ListView)findViewById(R.id.drawer_list);
-        listView.setAdapter(new ArrayAdapter<>(this,
-                android.R.layout.simple_list_item_1, drawerItems));
-        listView.setOnItemClickListener(new DrawerItemClickListener());
-        drawerToggle = new ActionBarDrawerToggle(this,drawerLayout,R.string.drawer_open,R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-                super.onDrawerClosed(view);
-                if (getSupportActionBar()!=null){
-                    getSupportActionBar().setTitle(title);
-                }
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                if (getSupportActionBar()!=null){
-                    getSupportActionBar().setTitle(drawerTitle);
-                }
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-        drawerLayout.addDrawerListener(drawerToggle);
-        if (getSupportActionBar()!=null){
-            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-            getSupportActionBar().setHomeButtonEnabled(true);
-        }
-        drawerToggle.syncState();
     }
 
-    @Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        drawerToggle.syncState();
-    }
 
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        drawerToggle.onConfigurationChanged(newConfig);
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()){
-            case android.R.id.home:{
-                if (drawerLayout.isDrawerOpen(listView)){
-                    drawerLayout.closeDrawer(listView);
-                }else{
-                    drawerLayout.openDrawer(listView);
-                }
-                return true;
-            }
-            default:return super.onOptionsItemSelected(item);
-        }
-    }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
@@ -130,79 +92,9 @@ public class MainActivity extends AppCompatActivity implements Home.onFragmentCl
             this.finish();
         }else if (count>0){
             title = getSupportFragmentManager().getBackStackEntryAt(count-1).getName();
-            if (getSupportActionBar()!=null){
-                getSupportActionBar().setTitle(title);
+            if (collapsingToolbarLayout!=null){
+                collapsingToolbarLayout.setTitle(title);//DOESN'T WORK
             }
-        }
-    }
-
-    @Override
-    public void buttonClicked(View v) {
-        int id = v.getId();
-        switch (id){
-            case (R.id.cal_button):{
-                selectedFragment = new Calendar();
-                title = getString(R.string.fragment_cal_title);
-                break;
-            }
-            case (R.id.tasks_button):{
-                selectedFragment = new Tasks();
-                title = getString(R.string.fragment_task_title);
-                break;
-            }
-            case (R.id.contacts_button):{
-                selectedFragment = new Contacts();
-                title = getString(R.string.fragment_contacts_title);
-                break;
-            }
-        }
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container,selectedFragment)
-                .addToBackStack(title)
-                .commit();
-
-        if (getSupportActionBar()!=null){
-            getSupportActionBar().setTitle(title);
-        }
-    }
-    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            selectItem(position);
-        }
-
-        private void selectItem (int position){
-            switch (position){
-                case (0) :{
-                    selectedFragment = new Home();
-                    title = getString(R.string.fragment_home_title);
-                    break;
-                }
-                case (1) :{
-                    selectedFragment = new Calendar();
-                    title = getString(R.string.fragment_cal_title);
-                    break;
-                }
-                case (2) :{
-                    selectedFragment = new Contacts();
-                    title = getString(R.string.fragment_contacts_title);
-                    break;
-                }
-                case (3) :{
-                    selectedFragment = new Tasks();
-                    title = getString(R.string.fragment_task_title);
-                    break;
-                }
-            }
-            FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-            ft.replace(R.id.container,selectedFragment)
-                    .addToBackStack(title)
-                    .commit();
-
-            if (getSupportActionBar()!=null){
-                getSupportActionBar().setTitle(title);
-            }
-            drawerLayout.closeDrawer(listView);
         }
     }
 }

@@ -1,28 +1,48 @@
-<LinearLayout
+<android.support.v4.widget.NestedScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
-    android:gravity="center"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.markfeldman.tasktrack.fragments.Home"
+    android:background="@color/colorAccent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.markfeldman.tasktrack.fragments.Home">
+    android:clipToPadding="false"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-    <Button
-        android:id="@+id/cal_button"
-        android:text="@string/button_calendar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/tasks_button"
-        android:text="@string/button_tasks"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-    <Button
-        android:id="@+id/contacts_button"
-        android:text="@string/button_contacts"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:orientation="vertical"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/cal_button"
+            android:background="@color/colorPrimary"
+            style="@style/Widget.AppCompat.Button.Colored"
+            android:text="@string/button_calendar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/tasks_button"
+            android:background="@color/colorPrimary"
+            android:layout_marginTop="20dp"
+            android:text="@string/button_tasks"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+        <Button
+            android:id="@+id/contacts_button"
+            android:background="@color/colorPrimary"
+            android:text="@string/button_contacts"
+            android:layout_marginTop="20dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+    </LinearLayout>
 
 
 
-</LinearLayout>
+
+
+</android.support.v4.widget.NestedScrollView>
+
+
