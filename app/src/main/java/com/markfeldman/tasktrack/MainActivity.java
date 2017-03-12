@@ -3,6 +3,7 @@ package com.markfeldman.tasktrack;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
@@ -48,22 +49,53 @@ public class MainActivity extends AppCompatActivity {
         titles.addAll(Arrays.asList(getResources().getString(R.string.fragment_task_title),
                 getResources().getString(R.string.fragment_cal_title),getResources().getString(R.string.fragment_contacts_title)));
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
+        final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
+        fab.hide();
         ViewPager viewPager = (ViewPager)findViewById(R.id.container);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments,titles);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
+
+
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if (position == 1) {
+                    fab.hide();
+                }else {
+                    fab.show();
+                }
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
         tabLayout.setupWithViewPager(viewPager);
 
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
 
         selectedFragment = new Home();
         if (savedInstanceState==null){
-            title  = getString(R.string.fragment_home_title);
+           /* title  = getString(R.string.fragment_home_title);
             getSupportFragmentManager()
                     .beginTransaction()
                     .add(R.id.container,selectedFragment)
                     .addToBackStack(title)//WORKS HERE
-                    .commit();
+                    .commit();*/
 
             if (getSupportActionBar()!=null){
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -73,7 +105,6 @@ public class MainActivity extends AppCompatActivity {
                 getSupportActionBar().setDisplayShowTitleEnabled(false);
             }
         }
-        title = getTitle().toString();
     }
 
 
@@ -84,17 +115,4 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(INSTANCE_STATE_SAVE_TITLE, title);
     }
 
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
-        int count = this.getSupportFragmentManager().getBackStackEntryCount();
-        if(count==0){
-            this.finish();
-        }else if (count>0){
-            title = getSupportFragmentManager().getBackStackEntryAt(count-1).getName();
-            if (collapsingToolbarLayout!=null){
-                collapsingToolbarLayout.setTitle(title);//DOESN'T WORK
-            }
-        }
-    }
 }
