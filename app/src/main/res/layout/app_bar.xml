@@ -25,7 +25,7 @@
             <ImageView
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@drawable/test2"
+                android:background="@drawable/header_image"
                 android:alpha="0.5"
                 android:scaleType="centerCrop"
                 android:fitsSystemWindows="true"
