@@ -1,5 +1,6 @@
-package com.markfeldman.tasktrack;
+package com.markfeldman.tasktrack.activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
@@ -18,7 +19,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TableLayout;
+import android.widget.Toast;
 
+import com.markfeldman.tasktrack.R;
 import com.markfeldman.tasktrack.fragments.Calendar;
 import com.markfeldman.tasktrack.fragments.Contacts;
 import com.markfeldman.tasktrack.fragments.Home;
@@ -32,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Fragment selectedFragment;
     private CollapsingToolbarLayout collapsingToolbarLayout;
     private String title;
+    private ViewPager viewPager;
     private final String INSTANCE_STATE_SAVE_TITLE = "save_title";
     private ArrayList<Fragment> fragments = new ArrayList<>();
     private ArrayList<String> titles = new ArrayList<>();
@@ -51,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
         final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
         fab.hide();
-        ViewPager viewPager = (ViewPager)findViewById(R.id.container);
+        viewPager = (ViewPager)findViewById(R.id.container);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments,titles);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
@@ -83,7 +87,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                fabAction();
             }
         });
 
@@ -113,6 +117,21 @@ public class MainActivity extends AppCompatActivity {
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putString(INSTANCE_STATE_SAVE_TITLE, title);
+    }
+
+    public void fabAction(){
+        int current = viewPager.getCurrentItem();
+
+        switch (current){
+            case 0:{
+
+                break;
+            }
+            case 2:{
+                Toast.makeText(this, "IN TAB 3", Toast.LENGTH_LONG).show();
+                break;
+            }
+        }
     }
 
 }

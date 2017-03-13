@@ -22,6 +22,7 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
+
         return fragments.get(position);
     }
 
@@ -36,4 +37,8 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
         return titles.get(position);
     }
 
+    @Override
+    public int getItemPosition(Object object) {
+        return POSITION_NONE;
+    }
 }
