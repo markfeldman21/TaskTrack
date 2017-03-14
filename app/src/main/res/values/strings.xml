@@ -21,6 +21,11 @@
     <string name="home_screen_tasks">Tasks</string>
     <string name="home_screen_contacts">Contacts</string>
 
+    <!--Hints-->
+    <string name="name_hint">Add Name</string>
+    <string name="number_hint">Add Number</string>
+    <string name="task_hint">Add Task</string>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 

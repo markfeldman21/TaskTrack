@@ -2,10 +2,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.markfeldman.tasktrack.fragments.Contacts">
 
-    <TextView
-        android:text="@string/home_screen_contacts"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fabContacts"
+        app:fabSize="normal"
+        android:elevation="6dp"
+        app:backgroundTint="@color/colorPrimary"
+        android:src="@drawable/ic_add_black_24dp"
+        android:layout_gravity="end|bottom"
+        app:pressedTranslationZ="12dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_anchor="@+id/container"
+        android:layout_marginBottom="200dp"
+        android:layout_marginRight="16dp" />
 </FrameLayout>

@@ -53,44 +53,12 @@ public class MainActivity extends AppCompatActivity {
         titles.addAll(Arrays.asList(getResources().getString(R.string.fragment_task_title),
                 getResources().getString(R.string.fragment_cal_title),getResources().getString(R.string.fragment_contacts_title)));
         TabLayout tabLayout = (TabLayout)findViewById(R.id.tabs);
-        final FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-        fab.hide();
         viewPager = (ViewPager)findViewById(R.id.container);
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments,titles);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
 
-
-        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-            }
-
-            @Override
-            public void onPageSelected(int position) {
-                if (position == 1) {
-                    fab.hide();
-                }else {
-                    fab.show();
-                }
-
-            }
-
-            @Override
-            public void onPageScrollStateChanged(int state) {
-
-            }
-        });
         tabLayout.setupWithViewPager(viewPager);
-
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                fabAction();
-            }
-        });
-
 
         selectedFragment = new Home();
         if (savedInstanceState==null){
@@ -119,19 +87,5 @@ public class MainActivity extends AppCompatActivity {
         outState.putString(INSTANCE_STATE_SAVE_TITLE, title);
     }
 
-    public void fabAction(){
-        int current = viewPager.getCurrentItem();
-
-        switch (current){
-            case 0:{
-
-                break;
-            }
-            case 2:{
-                Toast.makeText(this, "IN TAB 3", Toast.LENGTH_LONG).show();
-                break;
-            }
-        }
-    }
 
 }

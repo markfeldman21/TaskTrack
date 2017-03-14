@@ -39,6 +39,6 @@ public class ViewPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return POSITION_NONE;
+        return POSITION_UNCHANGED;
     }
 }
