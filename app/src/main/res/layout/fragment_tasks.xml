@@ -7,6 +7,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.markfeldman.tasktrack.fragments.Tasks">
 
+ <android.support.v7.widget.RecyclerView
+     android:id="@+id/recyclerViewTasks"
+     android:layout_width="match_parent"
+     android:layout_height="match_parent"/>
+
  <android.support.design.widget.FloatingActionButton
      android:id="@+id/fabTasks"
      app:fabSize="normal"
