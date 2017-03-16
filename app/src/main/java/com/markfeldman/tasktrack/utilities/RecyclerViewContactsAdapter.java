@@ -1,6 +1,7 @@
 package com.markfeldman.tasktrack.utilities;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.markfeldman.tasktrack.R;
 
 public class RecyclerViewContactsAdapter extends RecyclerView.Adapter<RecyclerViewContactsAdapter.ContactsHolder> {
+    private Cursor cursor;
 
     class ContactsHolder extends RecyclerView.ViewHolder{
         TextView contactsName;
@@ -40,6 +42,14 @@ public class RecyclerViewContactsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public int getItemCount() {
-        return 10;
+        if (cursor==null){
+            return 0;
+        }
+        return cursor.getCount();
+    }
+
+    public void swap (Cursor c){
+        this.cursor = c;
+        notifyDataSetChanged();
     }
 }
