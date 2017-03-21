@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -28,9 +29,11 @@ public class PopUpUtilities {
         alert.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
+                Log.v("TAG","IN POP UP TASKS");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.TasksContract.TASK,popUpGetTask.getText().toString());
                 Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
+                Log.v("TAG","URI ==== " + uri);
                 context.getContentResolver().insert(uri,contentValues);
             }
         });

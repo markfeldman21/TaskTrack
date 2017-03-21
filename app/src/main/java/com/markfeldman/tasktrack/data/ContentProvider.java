@@ -74,20 +74,26 @@ public class ContentProvider extends android.content.ContentProvider {
         long rowsInserted=0;
             switch (match){
                 case CODE_TASK:{
+                    Log.v("TAG","INSERT PROVIDER TASKS");
                     taskTrackerDatabase.beginTransaction();
                     rowsInserted = taskTrackerDatabase.insertRowToTasks(values);
                     taskTrackerDatabase.transactionSuccesful();
                     taskTrackerDatabase.endTransaction();
+                    break;
                 }
                 case CODE_CONTACTS:{
+                    Log.v("TAG","INSERT PROVIDER CONTACTS");
                     taskTrackerDatabase.beginTransaction();
                     rowsInserted = taskTrackerDatabase.insertRowToContacts(values);
                     taskTrackerDatabase.transactionSuccesful();
                     taskTrackerDatabase.endTransaction();
+                    break;
                 }
-                if(rowsInserted>0){
-                    getContext().getContentResolver().notifyChange(uri,null);
-                }
+
+        }
+
+        if(rowsInserted>0){
+            getContext().getContentResolver().notifyChange(uri,null);
         }
 
         return null;
