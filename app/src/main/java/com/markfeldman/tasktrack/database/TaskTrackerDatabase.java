@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 public class TaskTrackerDatabase {
     private final String DATABASE_NAME = "task_tracker_database";
@@ -103,6 +104,15 @@ public class TaskTrackerDatabase {
 
     public long insertRowToContacts(ContentValues cv){
         return mDb.insert(DatabaseContract.ContactsContract.TABLE_NAME, null,cv);
+    }
+
+    public boolean deleteTaskRow(String where){
+        Log.v("TAG", "DELETING " + where);
+        return mDb.delete(DatabaseContract.TasksContract.TABLE_NAME,where,null) !=0;
+    }
+
+    public boolean deleteContactsRow(String where){
+        return mDb.delete(DatabaseContract.ContactsContract.TABLE_NAME,where,null) !=0;
     }
 
 

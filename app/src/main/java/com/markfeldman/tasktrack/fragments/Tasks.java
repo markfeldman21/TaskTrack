@@ -15,6 +15,7 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -36,6 +37,8 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
     private RecyclerViewTasksAdapter recyclerViewTasksAdapter;
     public final int SEARCH_TASK_LOADER_ID = 33;
     private String[] projection = {DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK};
+    private Uri tasksQueryUri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
+    Cursor cursor;
 
     public Tasks() {
     }
@@ -62,6 +65,19 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
             }
         });
 
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                long id = (long) viewHolder.itemView.getTag();
+                getActivity().getContentResolver().delete(tasksQueryUri, DatabaseContract.TasksContract._ID + "=" + id, null);
+                recyclerViewTasksAdapter.swap(cursor);
+            }
+        }).attachToRecyclerView(recyclerView);
 
         getActivity().getSupportLoaderManager().initLoader(SEARCH_TASK_LOADER_ID,null,this);
 
@@ -73,8 +89,6 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id){
             case SEARCH_TASK_LOADER_ID:{
-                Uri tasksQueryUri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
-
 
                 return new CursorLoader(getActivity(),tasksQueryUri,projection,null,null,null);
             }
@@ -87,6 +101,7 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
         if (data.getCount() != 0){
             Log.v("TAG","LARGER THAN 0!!!!!" + data.getCount());
+            cursor = data;
             recyclerViewTasksAdapter.swap(data);
         }else if (data.getCount() == 0) {
             Toast.makeText(getActivity(),"Nothing In there", Toast.LENGTH_LONG).show();

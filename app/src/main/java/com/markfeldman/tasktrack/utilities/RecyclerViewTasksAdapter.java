@@ -37,6 +37,8 @@ public class RecyclerViewTasksAdapter extends RecyclerView.Adapter<RecyclerViewT
     @Override
     public void onBindViewHolder(TasksHolder holder, int position) {
         cursor.moveToPosition(position);
+        long id = cursor.getLong(cursor.getColumnIndex(DatabaseContract.TasksContract._ID));
+        holder.itemView.setTag(id);
         holder.tasksText.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.TasksContract.TASK)));
     }
 

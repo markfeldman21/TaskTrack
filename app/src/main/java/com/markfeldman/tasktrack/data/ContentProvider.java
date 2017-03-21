@@ -101,6 +101,14 @@ public class ContentProvider extends android.content.ContentProvider {
 
     @Override
     public int delete(@NonNull Uri uri, @Nullable String selection, @Nullable String[] selectionArgs) {
+        int match = sUriMatcher.match(uri);
+        switch (match){
+            case CODE_TASK:{
+                taskTrackerDatabase.deleteTaskRow(selection);
+                break;
+            }
+        }
+        getContext().getContentResolver().notifyChange(uri,null);
         return 0;
     }
 
