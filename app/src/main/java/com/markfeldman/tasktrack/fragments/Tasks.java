@@ -34,7 +34,7 @@ import com.markfeldman.tasktrack.utilities.RecyclerViewTasksAdapter;
 public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cursor> {
     private RecyclerView recyclerView;
     private RecyclerViewTasksAdapter recyclerViewTasksAdapter;
-    public final int SEARCH_LOADER_ID = 33;
+    public final int SEARCH_TASK_LOADER_ID = 33;
     private String[] projection = {DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK};
 
     public Tasks() {
@@ -63,7 +63,7 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
         });
 
 
-        getActivity().getSupportLoaderManager().initLoader(SEARCH_LOADER_ID,null,this);
+        getActivity().getSupportLoaderManager().initLoader(SEARCH_TASK_LOADER_ID,null,this);
 
         return view;
     }
@@ -72,7 +72,7 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id){
-            case SEARCH_LOADER_ID:{
+            case SEARCH_TASK_LOADER_ID:{
                 Uri tasksQueryUri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
 
 
