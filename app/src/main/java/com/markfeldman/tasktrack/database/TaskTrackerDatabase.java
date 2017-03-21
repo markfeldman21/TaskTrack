@@ -46,7 +46,7 @@ public class TaskTrackerDatabase {
 
 
     public Cursor getAllTaskRows(){
-        return mDb.query(DatabaseContract.TasksContract.TABLE_NAME,null,null,null,null,null,null);
+        return mDb.query(DatabaseContract.TasksContract.TABLE_NAME,null,null,null,null,null,DatabaseContract.TasksContract.TASK + " ASC");
     }
 
     public Cursor getAllContactRows(){
@@ -97,8 +97,12 @@ public class TaskTrackerDatabase {
 
 
     //SQLite return statement returns long containing id of inserted Row
-    public long insertRow(String table, ContentValues cv){
-        return mDb.insert(table, null,cv);
+    public long insertRowToTasks(ContentValues cv){
+        return mDb.insert(DatabaseContract.TasksContract.TABLE_NAME, null,cv);
+    }
+
+    public long insertRowToContacts(ContentValues cv){
+        return mDb.insert(DatabaseContract.ContactsContract.TABLE_NAME, null,cv);
     }
 
 

@@ -3,6 +3,7 @@ package com.markfeldman.tasktrack.utilities;
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,7 +36,8 @@ public class RecyclerViewTasksAdapter extends RecyclerView.Adapter<RecyclerViewT
 
     @Override
     public void onBindViewHolder(TasksHolder holder, int position) {
-        holder.tasksText.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.TasksContract.TABLE_NAME)));
+        cursor.moveToPosition(position);
+        holder.tasksText.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.TasksContract.TASK)));
     }
 
     @Override

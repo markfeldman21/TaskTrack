@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -29,10 +30,9 @@ public class PopUpUtilities {
             public void onClick(DialogInterface dialog, int which) {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.TasksContract.TASK,popUpGetTask.getText().toString());
+                Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
 
-                TaskTrackerDatabase taskTrackerDatabase = new TaskTrackerDatabase(context);
-                taskTrackerDatabase.openReadable();
-                taskTrackerDatabase.insertRow(DatabaseContract.TasksContract.TABLE_NAME,contentValues);
+                context.getContentResolver().insert(uri,contentValues);
             }
         });
 
