@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.markfeldman.tasktrack.R;
+import com.markfeldman.tasktrack.database.DatabaseContract;
 
 public class RecyclerViewContactsAdapter extends RecyclerView.Adapter<RecyclerViewContactsAdapter.ContactsHolder> {
     private Cursor cursor;
@@ -36,8 +37,9 @@ public class RecyclerViewContactsAdapter extends RecyclerView.Adapter<RecyclerVi
 
     @Override
     public void onBindViewHolder(ContactsHolder holder, int position) {
-        holder.contactsName.setText("Mark");
-        holder.contactsNumber.setText("617 862 83 75");
+        cursor.moveToPosition(position);
+        holder.contactsName.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.ContactsContract.CONTACT_NAME)));
+        holder.contactsNumber.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.ContactsContract.CONTACT_NUMBER)));
     }
 
     @Override

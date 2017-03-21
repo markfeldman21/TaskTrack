@@ -49,6 +49,10 @@ public class ContentProvider extends android.content.ContentProvider {
                 cursor = taskTrackerDatabase.getAllTaskRows();
                 break;
             }
+            case CODE_CONTACTS:{
+                cursor = taskTrackerDatabase.getAllContactRows();
+                break;
+            }
             default:
                 throw new UnsupportedOperationException("UKNOWN URI:" + uri);
         }
@@ -67,20 +71,23 @@ public class ContentProvider extends android.content.ContentProvider {
     public Uri insert(@NonNull Uri uri, @Nullable ContentValues values) {
         int match = sUriMatcher.match(uri);
         taskTrackerDatabase.openWritable();
-        long rowsInserted;
+        long rowsInserted=0;
             switch (match){
                 case CODE_TASK:{
                     taskTrackerDatabase.beginTransaction();
                     rowsInserted = taskTrackerDatabase.insertRowToTasks(values);
                     taskTrackerDatabase.transactionSuccesful();
                     taskTrackerDatabase.endTransaction();
-
-                    if(rowsInserted>0){
-                        getContext().getContentResolver().notifyChange(uri,null);
-                    }
-
                 }
-
+                case CODE_CONTACTS:{
+                    taskTrackerDatabase.beginTransaction();
+                    rowsInserted = taskTrackerDatabase.insertRowToContacts(values);
+                    taskTrackerDatabase.transactionSuccesful();
+                    taskTrackerDatabase.endTransaction();
+                }
+                if(rowsInserted>0){
+                    getContext().getContentResolver().notifyChange(uri,null);
+                }
         }
 
         return null;

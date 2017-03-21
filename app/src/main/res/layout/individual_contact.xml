@@ -9,16 +9,19 @@
     <TextView
         android:id="@+id/contact_name"
         tools:text="MARK"
-        tools:textSize="30sp"
-        android:layout_width="0dp"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="50dp"
+        app:layout_constraintLeft_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/contact_number"
         tools:text="617 8628375"
-        tools:textSize="30sp"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"
+        android:textSize="30sp"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginLeft="50dp"

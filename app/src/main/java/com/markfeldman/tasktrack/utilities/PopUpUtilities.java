@@ -31,7 +31,6 @@ public class PopUpUtilities {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.TasksContract.TASK,popUpGetTask.getText().toString());
                 Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
-
                 context.getContentResolver().insert(uri,contentValues);
             }
         });
@@ -46,10 +45,11 @@ public class PopUpUtilities {
         alert.show();
     }
 
-    public static void addContactsPopUpWindow(Context context){
+    public static void addContactsPopUpWindow(final Context context){
         LayoutInflater inflater = LayoutInflater.from(context);
         final View view = inflater.inflate(R.layout.add_contacts_pop_up, null);
-        final EditText popUp = (EditText)view.findViewById(R.id.addName);
+        final EditText popUpName = (EditText)view.findViewById(R.id.addName);
+        final EditText popUpNumber = (EditText)view.findViewById(R.id.addNumber);
 
         AlertDialog.Builder alert = new AlertDialog.Builder(context);
         alert.setView(view);
@@ -59,7 +59,11 @@ public class PopUpUtilities {
         alert.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-
+                ContentValues contentValues = new ContentValues();
+                contentValues.put(DatabaseContract.ContactsContract.CONTACT_NAME,popUpName.getText().toString());
+                contentValues.put(DatabaseContract.ContactsContract.CONTACT_NUMBER,popUpNumber.getText().toString());
+                Uri uri = DatabaseContract.ContactsContract.CONTENT_URI_CONTACTS;
+                context.getContentResolver().insert(uri,contentValues);
             }
         });
 
