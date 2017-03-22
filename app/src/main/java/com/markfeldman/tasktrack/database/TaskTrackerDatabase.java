@@ -51,7 +51,7 @@ public class TaskTrackerDatabase {
     }
 
     public Cursor getAllContactRows(){
-        return mDb.query(DatabaseContract.ContactsContract.TABLE_NAME,null,null,null,null,null,null);
+        return mDb.query(DatabaseContract.ContactsContract.TABLE_NAME,null,null,null,null,null,DatabaseContract.ContactsContract.CONTACT_NAME + " ASC");
     }
 
     public Cursor getSpecificTaskRow(String tableName,String[] projection,String selection,String[] rowID){
@@ -107,7 +107,6 @@ public class TaskTrackerDatabase {
     }
 
     public boolean deleteTaskRow(String where){
-        Log.v("TAG", "DELETING " + where);
         return mDb.delete(DatabaseContract.TasksContract.TABLE_NAME,where,null) !=0;
     }
 

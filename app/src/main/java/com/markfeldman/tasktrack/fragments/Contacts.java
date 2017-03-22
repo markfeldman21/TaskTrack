@@ -11,6 +11,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +34,8 @@ public class Contacts extends Fragment implements LoaderManager.LoaderCallbacks<
     private final int SEARCH_CONTACTS_LOADER_ID = 24;
     private String[] projection = {DatabaseContract.ContactsContract._ID,DatabaseContract.ContactsContract.CONTACT_NAME,
     DatabaseContract.ContactsContract.CONTACT_NUMBER};
+    private final Uri contactsQueryUri = DatabaseContract.ContactsContract.CONTENT_URI_CONTACTS;
+    private Cursor cursor;
 
     public Contacts() {
         // Required empty public constructor
@@ -51,8 +54,6 @@ public class Contacts extends Fragment implements LoaderManager.LoaderCallbacks<
         recyclerViewContactsAdapter = new RecyclerViewContactsAdapter();
         recyclerView.setAdapter(recyclerViewContactsAdapter);
 
-        getActivity().getSupportLoaderManager().initLoader(SEARCH_CONTACTS_LOADER_ID,null,this);
-
         FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fabContacts);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -61,22 +62,37 @@ public class Contacts extends Fragment implements LoaderManager.LoaderCallbacks<
             }
         });
 
+        swipeToDelete();
+        getActivity().getSupportLoaderManager().initLoader(SEARCH_CONTACTS_LOADER_ID,null,this);
+
         return view;
+    }
+
+
+    public void swipeToDelete(){
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
+                long id = (long) viewHolder.itemView.getTag();
+                getActivity().getContentResolver().delete(contactsQueryUri, DatabaseContract.ContactsContract._ID + "=" + id, null);
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        Uri contactsQueryUri = DatabaseContract.ContactsContract.CONTENT_URI_CONTACTS;
         return new CursorLoader(getActivity(),contactsQueryUri,projection,null,null,null);
     }
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() != 0){
-            recyclerViewContactsAdapter.swap(data);
-        }else if (data.getCount() == 0) {
-            Toast.makeText(getActivity(),"Nothing In there", Toast.LENGTH_LONG).show();
-        }
+        cursor = data;
+        recyclerViewContactsAdapter.swap(data);
     }
 
     @Override

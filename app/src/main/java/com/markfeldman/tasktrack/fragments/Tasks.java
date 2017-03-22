@@ -55,7 +55,6 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
         recyclerView.setHasFixedSize(true);
         recyclerViewTasksAdapter = new RecyclerViewTasksAdapter();
         recyclerView.setAdapter(recyclerViewTasksAdapter);
-
         final FloatingActionButton fab = (FloatingActionButton)view.findViewById(R.id.fabTasks);
 
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +64,14 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
             }
         });
 
+        swipeToDelete();
+
+        getActivity().getSupportLoaderManager().initLoader(SEARCH_TASK_LOADER_ID,null,this);
+
+        return view;
+    }
+
+    public void swipeToDelete(){
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -75,13 +82,9 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
             public void onSwiped(RecyclerView.ViewHolder viewHolder, int swipeDir) {
                 long id = (long) viewHolder.itemView.getTag();
                 getActivity().getContentResolver().delete(tasksQueryUri, DatabaseContract.TasksContract._ID + "=" + id, null);
-                recyclerViewTasksAdapter.swap(cursor);
+                Log.v("TAG","INSIDE ON SWIPED CURSOR SIZE" + cursor.getCount());
             }
         }).attachToRecyclerView(recyclerView);
-
-        getActivity().getSupportLoaderManager().initLoader(SEARCH_TASK_LOADER_ID,null,this);
-
-        return view;
     }
 
 
@@ -89,7 +92,6 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id){
             case SEARCH_TASK_LOADER_ID:{
-
                 return new CursorLoader(getActivity(),tasksQueryUri,projection,null,null,null);
             }
             default:
@@ -99,14 +101,8 @@ public class Tasks extends Fragment implements LoaderManager.LoaderCallbacks<Cur
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-        if (data.getCount() != 0){
-            Log.v("TAG","LARGER THAN 0!!!!!" + data.getCount());
-            cursor = data;
-            recyclerViewTasksAdapter.swap(data);
-        }else if (data.getCount() == 0) {
-            Toast.makeText(getActivity(),"Nothing In there", Toast.LENGTH_LONG).show();
-        }
-
+        cursor = data;
+        recyclerViewTasksAdapter.swap(data);
     }
 
     @Override

@@ -38,6 +38,8 @@ public class RecyclerViewContactsAdapter extends RecyclerView.Adapter<RecyclerVi
     @Override
     public void onBindViewHolder(ContactsHolder holder, int position) {
         cursor.moveToPosition(position);
+        long id = cursor.getLong(cursor.getColumnIndex(DatabaseContract.ContactsContract._ID));
+        holder.itemView.setTag(id);
         holder.contactsName.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.ContactsContract.CONTACT_NAME)));
         holder.contactsNumber.setText(cursor.getString(cursor.getColumnIndex(DatabaseContract.ContactsContract.CONTACT_NUMBER)));
     }

@@ -107,6 +107,10 @@ public class ContentProvider extends android.content.ContentProvider {
                 taskTrackerDatabase.deleteTaskRow(selection);
                 break;
             }
+            case CODE_CONTACTS:{
+                taskTrackerDatabase.deleteContactsRow(selection);
+                break;
+            }
         }
         getContext().getContentResolver().notifyChange(uri,null);
         return 0;
