@@ -4,15 +4,22 @@ import android.app.AlertDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.database.Cursor;
 import android.net.Uri;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.markfeldman.tasktrack.R;
 import com.markfeldman.tasktrack.database.DatabaseContract;
 import com.markfeldman.tasktrack.database.TaskTrackerDatabase;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class PopUpUtilities {
 
@@ -33,7 +40,6 @@ public class PopUpUtilities {
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.TasksContract.TASK,popUpGetTask.getText().toString());
                 Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
-                Log.v("TAG","URI ==== " + uri);
                 context.getContentResolver().insert(uri,contentValues);
             }
         });
@@ -78,6 +84,39 @@ public class PopUpUtilities {
         });
         alert.create();
         alert.show();
+    }
+
+    public static void listTodaysTasks(Context context, Date dateClicked){
+        String[] projection = {DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK};
+        Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
+        Cursor cursor = context.getContentResolver().query(uri,projection,null,null,null);
+        cursor.moveToFirst();
+        Date date = new Date();
+        long time = date.getTime();
+        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yy", Locale.US);
+        String dateClickedText = formatDate.format(dateClicked);
+        String dateCurrentText = formatDate.format(time);
+
+        if(dateClickedText.equals(dateCurrentText)){
+            AlertDialog.Builder alert = new AlertDialog.Builder(context);
+            alert.setTitle("Tasks");
+            alert.setCancelable(true);
+
+            alert.setMultiChoiceItems(cursor,DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK, new DialogInterface.OnMultiChoiceClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                    if (isChecked){
+                        //add to new item Checked Database
+                        //put time
+                    }
+
+                }
+            });
+            alert.create();
+            alert.show();
+        }
+
+
     }
 
 }

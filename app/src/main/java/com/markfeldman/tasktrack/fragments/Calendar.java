@@ -6,25 +6,46 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
+import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.markfeldman.tasktrack.R;
+import com.markfeldman.tasktrack.utilities.PopUpUtilities;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class Calendar extends Fragment {
-
+    private Date date = new Date();
 
     public Calendar() {
-        // Required empty public constructor
     }
 
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_calendar, container, false);
+        View view = inflater.inflate(R.layout.fragment_calendar, container, false);
+        CompactCalendarView calendarView = (CompactCalendarView)view.findViewById(R.id.compactCalendar);
+
+        calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
+            @Override
+            public void onDayClick(Date dateClicked) {
+                PopUpUtilities.listTodaysTasks(getActivity(),dateClicked);
+
+            }
+
+            @Override
+            public void onMonthScroll(Date firstDayOfNewMonth) {
+
+            }
+        });
+
+        return view;
     }
 
 }
