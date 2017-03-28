@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import com.github.sundeepk.compactcalendarview.CompactCalendarView;
 import com.markfeldman.tasktrack.R;
+import com.markfeldman.tasktrack.utilities.DateUtility;
 import com.markfeldman.tasktrack.utilities.PopUpUtilities;
 
 import java.text.SimpleDateFormat;
@@ -35,7 +36,11 @@ public class Calendar extends Fragment {
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
-                PopUpUtilities.listTodaysTasks(getActivity(),dateClicked);
+                if(DateUtility.isItToday(dateClicked)){
+                    PopUpUtilities.listTodaysTasks(getActivity(),dateClicked);
+                }else {
+                    Toast.makeText(getActivity(), "DATE ===== " + DateUtility.formatToDDMMYY(dateClicked), Toast.LENGTH_LONG).show();
+                }
 
             }
 

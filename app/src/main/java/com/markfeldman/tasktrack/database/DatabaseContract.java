@@ -31,6 +31,7 @@ public class DatabaseContract {
         public static final String TABLE_NAME = "selected_tasks_table";
         public static final String SELECTED_TASK = "task";
         public static final String TIME_STAMP = "time_stamp";
+        public static final String DATE_STAMP = "date_stamp";
     }
 
 

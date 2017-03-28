@@ -124,6 +124,7 @@ public class ContentProvider extends android.content.ContentProvider {
                 try{
                     for (ContentValues value : values){
                         long id = taskTrackerDatabase.insertRowToSelectedTasks(value);
+                        Log.v("TAG", "INSIDE ====== " + value.getAsString(DatabaseContract.SelectedTasks.DATE_STAMP));
                         if (id!=-1){
                             rowsInserted++;
                         }

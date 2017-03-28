@@ -95,82 +95,83 @@ public class PopUpUtilities {
         if (cursor!=null){
             cursor.moveToFirst();
         }
+        AlertDialog.Builder alert = new AlertDialog.Builder(context);
+        alert.setTitle("Tasks");
+        alert.setCancelable(true);
 
-        if(DateUtility.areDatesEqual(dateClicked)){
-            AlertDialog.Builder alert = new AlertDialog.Builder(context);
-            alert.setTitle("Tasks");
-            alert.setCancelable(true);
+        alert.setMultiChoiceItems(cursor,DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+                if (cursor!=null){
+                    cursor.moveToPosition(which);
+                    String selected = cursor.getString(cursor.getColumnIndex(DatabaseContract.SelectedTasks.SELECTED_TASK));
+                    if (isChecked){
+                        boxesChecked.add(selected);
+                    }else {
+                        boxesChecked.remove(selected);
+                    }
+                }
+            }
+        }).setPositiveButton("Done!", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                ContentValues[] cvArr;
+                Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
+                cvArr = addContentValues(boxesChecked);
+                context.getContentResolver().bulkInsert(checkedTasks,cvArr);
+                boxesChecked.clear();
 
-            alert.setMultiChoiceItems(cursor,DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK, new DialogInterface.OnMultiChoiceClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-                    if (cursor!=null){
-                        cursor.moveToPosition(which);
-                        String selected = cursor.getString(cursor.getColumnIndex(DatabaseContract.SelectedTasks.SELECTED_TASK));
-                        if (isChecked){
-                            boxesChecked.add(selected);
-                        }else {
-                            boxesChecked.remove(selected);
+            }
+        }).setNegativeButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK,DatabaseContract.SelectedTasks.TIME_STAMP};
+                final Uri uri1 = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
+                Cursor cursor1 = context.getContentResolver().query(uri1,projection1,null,null,null);
+                if(cursor1!=null){
+                    final CharSequence[] tasks = cursorToChar(cursor1);
+                    AlertDialog.Builder alertCompleted = new AlertDialog.Builder(context);
+                    alertCompleted.setTitle("Tasks Completed");
+                    alertCompleted.setCancelable(true);
+
+                    alertCompleted.setItems(tasks, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
                         }
-                    }
+                    }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
+
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+
+
+                        }
+                    });
+                    alertCompleted.create();
+                    alertCompleted.show();
+                    cursor1.close();
                 }
-            }).setPositiveButton("Done!", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    ContentValues[] cvArr;
-                    Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
-                    cvArr = addContentValues(boxesChecked);
-                    context.getContentResolver().bulkInsert(checkedTasks,cvArr);
-                    boxesChecked.clear();
 
-                }
-            }).setNegativeButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK,DatabaseContract.SelectedTasks.TIME_STAMP};
-                    final Uri uri1 = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
-                    Cursor cursor1 = context.getContentResolver().query(uri1,projection1,null,null,null);
-                    if(cursor1!=null){
-                        final CharSequence[] tasks = cursorToChar(cursor1);
-                        AlertDialog.Builder alertCompleted = new AlertDialog.Builder(context);
-                        alertCompleted.setTitle("Tasks Completed");
-                        alertCompleted.setCancelable(true);
+            }
+        });
+        alert.create();
+        alert.show();
+    }
 
-                        alertCompleted.setItems(tasks, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-                            }
-                        }).setNegativeButton("Cancel", new DialogInterface.OnClickListener(){
-
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-
-
-                            }
-                        });
-                        alertCompleted.create();
-                        alertCompleted.show();
-                        cursor1.close();
-                    }
-
-                }
-            });
-            alert.create();
-            alert.show();
-
-        }
+    public static void listOtherDaysTasks(Date date){
 
     }
 
     private static ContentValues[] addContentValues(ArrayList<String> arrayList){
         ContentValues[] cvArray = new ContentValues[arrayList.size()];
         String currentTime = DateUtility.getCurrentTime();
+        String date = DateUtility.getCurrentDate();
 
         for (int i = 0; i<arrayList.size();i++){
             ContentValues cv = new ContentValues();
             cv.put(DatabaseContract.SelectedTasks.SELECTED_TASK,arrayList.get(i));
             cv.put(DatabaseContract.SelectedTasks.TIME_STAMP,currentTime);
+            cv.put(DatabaseContract.SelectedTasks.DATE_STAMP,date);
             cvArray[i] = cv;
         }
         return cvArray;

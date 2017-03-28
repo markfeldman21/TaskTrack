@@ -146,6 +146,7 @@ public class TaskTrackerDatabase {
         private final static String CREATE_SELECTED_TASKS_TABLE = "CREATE TABLE " + DatabaseContract.SelectedTasks.TABLE_NAME+
                 " ("+ DatabaseContract.TasksContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DatabaseContract.SelectedTasks.SELECTED_TASK + " TEXT NOT NULL, " +
+                DatabaseContract.SelectedTasks.DATE_STAMP + " TEXT NOT NULL, " +
                 DatabaseContract.SelectedTasks.TIME_STAMP + " TEXT NOT NULL " +
                 ");";
 
