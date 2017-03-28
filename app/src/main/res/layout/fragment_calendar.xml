@@ -5,6 +5,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.markfeldman.tasktrack.fragments.Calendar">
 
+
+
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         android:id="@+id/compactCalendar"
         android:layout_width="match_parent"
@@ -12,5 +14,6 @@
         app:compactCalendarBackgroundColor="@color/colorAccent"
         app:compactCalendarTextSize="12sp"
         />
+
 
 </FrameLayout>

@@ -54,9 +54,22 @@ public class TaskTrackerDatabase {
         return mDb.query(DatabaseContract.ContactsContract.TABLE_NAME,null,null,null,null,null,DatabaseContract.ContactsContract.CONTACT_NAME + " ASC");
     }
 
-    public Cursor getSpecificTaskRow(String tableName,String[] projection,String selection,String[] rowID){
-        //String where = MovieContract.MovieDataContract._ID + "=?";
-        Cursor c = mDb.query(tableName,projection,selection,rowID,null,null,null);
+    public Cursor getAllSelectedTaskRows(){
+        return mDb.query(DatabaseContract.SelectedTasks.TABLE_NAME,null,null,null,null,null,null);
+    }
+
+    public Cursor getSpecificTaskRow(String[] projection,String[] rowID){
+        String selection = DatabaseContract.TasksContract._ID+ "=?";
+        Cursor c = mDb.query(DatabaseContract.TasksContract.TABLE_NAME,projection,selection,rowID,null,null,null);
+        if (c!=null){
+            c.moveToFirst();
+        }
+        return c;
+    }
+
+    public Cursor getSpecificSelectedTaskRow(String[] projection,String[] rowID){
+        String selection = DatabaseContract.SelectedTasks._ID+ "=?";
+        Cursor c = mDb.query(DatabaseContract.SelectedTasks.TABLE_NAME,projection,selection,rowID,null,null,null);
         if (c!=null){
             c.moveToFirst();
         }
@@ -96,6 +109,11 @@ public class TaskTrackerDatabase {
         }
     }
 
+    public boolean deleteSelectedTaskRow(long rowID){
+        String where = DatabaseContract.SelectedTasks._ID + "=" + rowID;
+        return mDb.delete(DatabaseContract.SelectedTasks.TABLE_NAME,where,null) !=0;
+    }
+
 
     //SQLite return statement returns long containing id of inserted Row
     public long insertRowToTasks(ContentValues cv){
@@ -104,6 +122,10 @@ public class TaskTrackerDatabase {
 
     public long insertRowToContacts(ContentValues cv){
         return mDb.insert(DatabaseContract.ContactsContract.TABLE_NAME, null,cv);
+    }
+
+    public long insertRowToSelectedTasks(ContentValues cv){
+        return mDb.insert(DatabaseContract.SelectedTasks.TABLE_NAME, null,cv);
     }
 
     public boolean deleteTaskRow(String where){
@@ -121,6 +143,12 @@ public class TaskTrackerDatabase {
                 DatabaseContract.TasksContract.TASK + " TEXT NOT NULL " +
                 ");";
 
+        private final static String CREATE_SELECTED_TASKS_TABLE = "CREATE TABLE " + DatabaseContract.SelectedTasks.TABLE_NAME+
+                " ("+ DatabaseContract.TasksContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                DatabaseContract.SelectedTasks.SELECTED_TASK + " TEXT NOT NULL, " +
+                DatabaseContract.SelectedTasks.TIME_STAMP + " TEXT NOT NULL " +
+                ");";
+
         private final static String CREATE_CONTACTS_TABLE = "CREATE TABLE " + DatabaseContract.ContactsContract.TABLE_NAME+
                 " ("+ DatabaseContract.ContactsContract._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 DatabaseContract.ContactsContract.CONTACT_NAME + " TEXT NOT NULL, " +
@@ -135,6 +163,7 @@ public class TaskTrackerDatabase {
         public void onCreate(SQLiteDatabase db) {
             db.execSQL(CREATE_CONTACTS_TABLE);
             db.execSQL(CREATE_TASKS_TABLE);
+            db.execSQL(CREATE_SELECTED_TASKS_TABLE);
 
         }
 
@@ -142,6 +171,7 @@ public class TaskTrackerDatabase {
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TasksContract.TABLE_NAME);
             db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.ContactsContract.TABLE_NAME);
+            db.execSQL("DROP TABLE IF EXISTS " + DatabaseContract.TasksContract.TABLE_NAME);
             onCreate(db);
 
         }

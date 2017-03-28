@@ -46,7 +46,6 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        collapsingToolbarLayout = (CollapsingToolbarLayout)findViewById(R.id.collapsing_toolbar);
         setSupportActionBar(toolbar);
 
         fragments.addAll(Arrays.asList(new Tasks(),new Calendar(),new Contacts()));
@@ -62,19 +61,8 @@ public class MainActivity extends AppCompatActivity {
 
         selectedFragment = new Home();
         if (savedInstanceState==null){
-           /* title  = getString(R.string.fragment_home_title);
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .add(R.id.container,selectedFragment)
-                    .addToBackStack(title)//WORKS HERE
-                    .commit();*/
-
             if (getSupportActionBar()!=null){
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
-            }
-        }else{
-            if (getSupportActionBar()!=null){
-                getSupportActionBar().setDisplayShowTitleEnabled(false);
             }
         }
     }

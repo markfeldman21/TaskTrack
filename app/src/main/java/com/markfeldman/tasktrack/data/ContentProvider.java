@@ -16,6 +16,8 @@ public class ContentProvider extends android.content.ContentProvider {
     public final static int CODE_TASK_ID = 101;
     public final static int CODE_CONTACTS = 200;
     public final static  int CODE_CONTACTS_ID = 201;
+    public final static int CODE_SELECTED_TASK = 300;
+    public final static int CODE_SELECTED_TASK_ID = 301;
 
     private static final UriMatcher sUriMatcher = buildURIMatcher();
     private TaskTrackerDatabase taskTrackerDatabase;
@@ -28,6 +30,8 @@ public class ContentProvider extends android.content.ContentProvider {
         uriMatcher.addURI(authority,DatabaseContract.TASK_TABLE + "/#",CODE_TASK_ID);
         uriMatcher.addURI(authority,DatabaseContract.CONTACTS_TABLE,CODE_CONTACTS);
         uriMatcher.addURI(authority, DatabaseContract.CONTACTS_TABLE + "/#",CODE_CONTACTS_ID);
+        uriMatcher.addURI(authority,DatabaseContract.SELECTED_TASKS_TABLE,CODE_SELECTED_TASK);
+        uriMatcher.addURI(authority,DatabaseContract.SELECTED_TASKS_TABLE + "/#",CODE_SELECTED_TASK_ID);
 
         return uriMatcher;
     }
@@ -47,6 +51,10 @@ public class ContentProvider extends android.content.ContentProvider {
         switch(match){
             case CODE_TASK:{
                 cursor = taskTrackerDatabase.getAllTaskRows();
+                break;
+            }
+            case CODE_SELECTED_TASK:{
+                cursor = taskTrackerDatabase.getAllSelectedTaskRows();
                 break;
             }
             case CODE_CONTACTS:{
@@ -74,7 +82,6 @@ public class ContentProvider extends android.content.ContentProvider {
         long rowsInserted=0;
             switch (match){
                 case CODE_TASK:{
-                    Log.v("TAG","INSERT PROVIDER TASKS");
                     taskTrackerDatabase.beginTransaction();
                     rowsInserted = taskTrackerDatabase.insertRowToTasks(values);
                     taskTrackerDatabase.transactionSuccesful();
@@ -82,9 +89,16 @@ public class ContentProvider extends android.content.ContentProvider {
                     break;
                 }
                 case CODE_CONTACTS:{
-                    Log.v("TAG","INSERT PROVIDER CONTACTS");
                     taskTrackerDatabase.beginTransaction();
                     rowsInserted = taskTrackerDatabase.insertRowToContacts(values);
+                    taskTrackerDatabase.transactionSuccesful();
+                    taskTrackerDatabase.endTransaction();
+                    break;
+                }
+                case CODE_SELECTED_TASK:{
+                    Log.v("TAG","INSERT PROVIDER");
+                    taskTrackerDatabase.beginTransaction();
+                    rowsInserted = taskTrackerDatabase.insertRowToSelectedTasks(values);
                     taskTrackerDatabase.transactionSuccesful();
                     taskTrackerDatabase.endTransaction();
                     break;
@@ -97,6 +111,38 @@ public class ContentProvider extends android.content.ContentProvider {
         }
 
         return null;
+    }
+
+    @Override
+    public int bulkInsert(@NonNull Uri uri, @NonNull ContentValues[] values) {
+        int match = sUriMatcher.match(uri);
+        taskTrackerDatabase.openWritable();
+        int rowsInserted = 0;
+        switch (match){
+            case CODE_SELECTED_TASK:{
+                taskTrackerDatabase.beginTransaction();
+                try{
+                    for (ContentValues value : values){
+                        long id = taskTrackerDatabase.insertRowToSelectedTasks(value);
+                        if (id!=-1){
+                            rowsInserted++;
+                        }
+                    }
+
+                    taskTrackerDatabase.transactionSuccesful();
+                }finally {
+                    taskTrackerDatabase.endTransaction();
+                }
+                if (rowsInserted>0){
+                    getContext().getContentResolver().notifyChange(uri,null);
+                }
+                Log.v("TAG", "INSERTED ====== " + rowsInserted);
+                return rowsInserted;
+
+            }
+            default:
+                return super.bulkInsert(uri, values);
+        }
     }
 
     @Override
