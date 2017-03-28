@@ -95,13 +95,8 @@ public class PopUpUtilities {
         if (cursor!=null){
             cursor.moveToFirst();
         }
-        Date date = new Date();
-        long time = date.getTime();
-        SimpleDateFormat formatDate = new SimpleDateFormat("dd/MM/yy", Locale.US);
-        String dateClickedText = formatDate.format(dateClicked);
-        String dateCurrentText = formatDate.format(time);
 
-        if(dateClickedText.equals(dateCurrentText)){
+        if(DateUtility.areDatesEqual(dateClicked)){
             AlertDialog.Builder alert = new AlertDialog.Builder(context);
             alert.setTitle("Tasks");
             alert.setCancelable(true);
@@ -132,7 +127,7 @@ public class PopUpUtilities {
             }).setNegativeButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK};
+                    String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK,DatabaseContract.SelectedTasks.TIME_STAMP};
                     final Uri uri1 = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
                     Cursor cursor1 = context.getContentResolver().query(uri1,projection1,null,null,null);
                     if(cursor1!=null){
@@ -170,10 +165,12 @@ public class PopUpUtilities {
 
     private static ContentValues[] addContentValues(ArrayList<String> arrayList){
         ContentValues[] cvArray = new ContentValues[arrayList.size()];
+        String currentTime = DateUtility.getCurrentTime();
 
         for (int i = 0; i<arrayList.size();i++){
             ContentValues cv = new ContentValues();
             cv.put(DatabaseContract.SelectedTasks.SELECTED_TASK,arrayList.get(i));
+            cv.put(DatabaseContract.SelectedTasks.TIME_STAMP,currentTime);
             cvArray[i] = cv;
         }
         return cvArray;
@@ -183,7 +180,9 @@ public class PopUpUtilities {
     private static CharSequence[] cursorToChar(Cursor cursor1){
         ArrayList<String>arrayList = new ArrayList<String>();
         for(cursor1.moveToFirst(); !cursor1.isAfterLast(); cursor1.moveToNext()) {
-            arrayList.add(cursor1.getString(cursor1.getColumnIndex(DatabaseContract.SelectedTasks.SELECTED_TASK)));
+            String task = cursor1.getString(cursor1.getColumnIndex(DatabaseContract.SelectedTasks.SELECTED_TASK));
+            String time = cursor1.getString(cursor1.getColumnIndex(DatabaseContract.SelectedTasks.TIME_STAMP));
+            arrayList.add(task + " (" + time + ")");
         }
         return arrayList.toArray(new String[arrayList.size()]);
     }
