@@ -3,6 +3,7 @@ package com.markfeldman.tasktrack.fragments;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,13 +34,16 @@ public class Calendar extends Fragment {
         View view = inflater.inflate(R.layout.fragment_calendar, container, false);
         CompactCalendarView calendarView = (CompactCalendarView)view.findViewById(R.id.compactCalendar);
 
+        //ADDFAKEDATA
+        PopUpUtilities.addFakaData(getActivity());
+
         calendarView.setListener(new CompactCalendarView.CompactCalendarViewListener() {
             @Override
             public void onDayClick(Date dateClicked) {
                 if(DateUtility.isItToday(dateClicked)){
                     PopUpUtilities.listTodaysTasks(getActivity(),dateClicked);
                 }else {
-                    Toast.makeText(getActivity(), "DATE ===== " + DateUtility.formatToDDMMYY(dateClicked), Toast.LENGTH_LONG).show();
+                    PopUpUtilities.listOtherDaysTasks(getActivity(),dateClicked);
                 }
 
             }

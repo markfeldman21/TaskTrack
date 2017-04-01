@@ -67,9 +67,11 @@ public class TaskTrackerDatabase {
         return c;
     }
 
-    public Cursor getSpecificSelectedTaskRow(String[] projection,String[] rowID){
-        String selection = DatabaseContract.SelectedTasks._ID+ "=?";
-        Cursor c = mDb.query(DatabaseContract.SelectedTasks.TABLE_NAME,projection,selection,rowID,null,null,null);
+    public Cursor getPreviouslySelectedTasks(String[] projection,String selection, String[] selectionArgs){
+        Cursor c =  mDb.query(true, DatabaseContract.SelectedTasks.TABLE_NAME, projection, selection,
+                selectionArgs,null,null,null,null);
+        Log.v("TAG", "CURSOR COUNT ==== " + c.getCount());
+
         if (c!=null){
             c.moveToFirst();
         }

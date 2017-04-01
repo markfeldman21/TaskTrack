@@ -17,7 +17,7 @@ public class ContentProvider extends android.content.ContentProvider {
     public final static int CODE_CONTACTS = 200;
     public final static  int CODE_CONTACTS_ID = 201;
     public final static int CODE_SELECTED_TASK = 300;
-    public final static int CODE_SELECTED_TASK_ID = 301;
+    public final static int CODE_SELECTED_TASK_DATE = 301;
 
     private static final UriMatcher sUriMatcher = buildURIMatcher();
     private TaskTrackerDatabase taskTrackerDatabase;
@@ -31,7 +31,7 @@ public class ContentProvider extends android.content.ContentProvider {
         uriMatcher.addURI(authority,DatabaseContract.CONTACTS_TABLE,CODE_CONTACTS);
         uriMatcher.addURI(authority, DatabaseContract.CONTACTS_TABLE + "/#",CODE_CONTACTS_ID);
         uriMatcher.addURI(authority,DatabaseContract.SELECTED_TASKS_TABLE,CODE_SELECTED_TASK);
-        uriMatcher.addURI(authority,DatabaseContract.SELECTED_TASKS_TABLE + "/#",CODE_SELECTED_TASK_ID);
+        uriMatcher.addURI(authority,DatabaseContract.SELECTED_TASKS_TABLE + "/*",CODE_SELECTED_TASK_DATE);
 
         return uriMatcher;
     }
@@ -55,6 +55,11 @@ public class ContentProvider extends android.content.ContentProvider {
             }
             case CODE_SELECTED_TASK:{
                 cursor = taskTrackerDatabase.getAllSelectedTaskRows();
+                break;
+            }
+            case CODE_SELECTED_TASK_DATE:{
+                Log.v("TAG", "IN CONTENT DATE");
+                cursor = taskTrackerDatabase.getPreviouslySelectedTasks(projection,selection,selectionArgs);
                 break;
             }
             case CODE_CONTACTS:{
@@ -124,7 +129,6 @@ public class ContentProvider extends android.content.ContentProvider {
                 try{
                     for (ContentValues value : values){
                         long id = taskTrackerDatabase.insertRowToSelectedTasks(value);
-                        Log.v("TAG", "INSIDE ====== " + value.getAsString(DatabaseContract.SelectedTasks.DATE_STAMP));
                         if (id!=-1){
                             rowsInserted++;
                         }
@@ -137,7 +141,6 @@ public class ContentProvider extends android.content.ContentProvider {
                 if (rowsInserted>0){
                     getContext().getContentResolver().notifyChange(uri,null);
                 }
-                Log.v("TAG", "INSERTED ====== " + rowsInserted);
                 return rowsInserted;
 
             }

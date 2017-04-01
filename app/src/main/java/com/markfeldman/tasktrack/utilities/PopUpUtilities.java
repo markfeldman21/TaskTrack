@@ -10,18 +10,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
-import android.widget.Toast;
-
 import com.markfeldman.tasktrack.R;
 import com.markfeldman.tasktrack.database.DatabaseContract;
-import com.markfeldman.tasktrack.database.TaskTrackerDatabase;
-
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
-
 public class PopUpUtilities {
 
     public static void addTaskPopUpWindow(final Context context){
@@ -37,7 +29,6 @@ public class PopUpUtilities {
         alert.setPositiveButton("ADD", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.v("TAG","IN POP UP TASKS");
                 ContentValues contentValues = new ContentValues();
                 contentValues.put(DatabaseContract.TasksContract.TASK,popUpGetTask.getText().toString());
                 Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
@@ -87,7 +78,7 @@ public class PopUpUtilities {
         alert.show();
     }
 
-    public static void listTodaysTasks(final Context context, Date dateClicked){
+    public static void listTodaysTasks(final Context context, final Date dateClicked){
         final ArrayList<String> boxesChecked = new ArrayList<>();
         String[] projection = {DatabaseContract.TasksContract._ID,DatabaseContract.TasksContract.TASK};
         final Uri uri = DatabaseContract.TasksContract.CONTENT_URI_TASKS;
@@ -122,12 +113,10 @@ public class PopUpUtilities {
                 boxesChecked.clear();
 
             }
-        }).setNegativeButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
+        }).setNeutralButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK,DatabaseContract.SelectedTasks.TIME_STAMP};
-                final Uri uri1 = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
-                Cursor cursor1 = context.getContentResolver().query(uri1,projection1,null,null,null);
+                Cursor cursor1 = getCursorForDateQuery(context,dateClicked);
                 if(cursor1!=null){
                     final CharSequence[] tasks = cursorToChar(cursor1);
                     AlertDialog.Builder alertCompleted = new AlertDialog.Builder(context);
@@ -158,8 +147,47 @@ public class PopUpUtilities {
         alert.show();
     }
 
-    public static void listOtherDaysTasks(Date date){
+    public static void listOtherDaysTasks(final Context context, Date dateClicked){
+        Cursor cursorForDate = getCursorForDateQuery(context,dateClicked);
+        if(cursorForDate!=null) {
+            cursorForDate.moveToFirst();
+            final CharSequence[] tasks = cursorToChar(cursorForDate);
+            AlertDialog.Builder alertCompleted = new AlertDialog.Builder(context);
+            alertCompleted.setTitle("Tasks Completed");
+            alertCompleted.setCancelable(true);
 
+            alertCompleted.setItems(tasks, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+                }
+            }).setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+
+
+                }
+
+            });
+            alertCompleted.create();
+            alertCompleted.show();
+            cursorForDate.close();
+
+        }
+
+
+    }
+
+    private static Cursor getCursorForDateQuery(Context context,Date dateClicked){
+        String[] projection1 = {DatabaseContract.SelectedTasks._ID,DatabaseContract.SelectedTasks.SELECTED_TASK,
+                DatabaseContract.SelectedTasks.TIME_STAMP, DatabaseContract.SelectedTasks.DATE_STAMP};
+        String searchBy = DateUtility.formatToDDMMYY(dateClicked);
+        Uri authority = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
+        authority = authority.buildUpon().appendPath(searchBy).build();
+        String selection = DatabaseContract.SelectedTasks.DATE_STAMP + " = ? ";
+        String[] selectionArgs = {searchBy};
+        return context.getContentResolver().query(authority,projection1,selection,selectionArgs,null);
     }
 
     private static ContentValues[] addContentValues(ArrayList<String> arrayList){
@@ -186,5 +214,36 @@ public class PopUpUtilities {
             arrayList.add(task + " (" + time + ")");
         }
         return arrayList.toArray(new String[arrayList.size()]);
+    }
+
+    public static void addFakaData(Context context){
+        ContentValues[] cvArr = new ContentValues[4];
+
+        ContentValues cv1 = new ContentValues();
+        cv1.put(DatabaseContract.SelectedTasks.SELECTED_TASK, "SHIT");
+        cv1.put(DatabaseContract.SelectedTasks.TIME_STAMP, "1 PM");
+        cv1.put(DatabaseContract.SelectedTasks.DATE_STAMP, "28/03/17");
+        cvArr[0] = cv1;
+
+        ContentValues cv2 = new ContentValues();
+        cv2.put(DatabaseContract.SelectedTasks.SELECTED_TASK, "SHAAAT");
+        cv2.put(DatabaseContract.SelectedTasks.TIME_STAMP, "2 PM");
+        cv2.put(DatabaseContract.SelectedTasks.DATE_STAMP, "28/03/17");
+        cvArr[1] = cv2;
+
+        ContentValues cv3 = new ContentValues();
+        cv3.put(DatabaseContract.SelectedTasks.SELECTED_TASK, "poop");
+        cv3.put(DatabaseContract.SelectedTasks.TIME_STAMP, "2 PM");
+        cv3.put(DatabaseContract.SelectedTasks.DATE_STAMP, "27/03/17");
+        cvArr[2] = cv3;
+
+        ContentValues cv4 = new ContentValues();
+        cv4.put(DatabaseContract.SelectedTasks.SELECTED_TASK, "DANCE");
+        cv4.put(DatabaseContract.SelectedTasks.TIME_STAMP, "2 PM");
+        cv4.put(DatabaseContract.SelectedTasks.DATE_STAMP, "28/03/17");
+        cvArr[3] = cv4;
+
+        Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
+        context.getContentResolver().bulkInsert(checkedTasks,cvArr);
     }
 }
