@@ -15,10 +15,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
-            android:authorities="com.markfeldman.tasktrack"
             android:name=".data.ContentProvider"
-            android:exported="false"/>
+            android:authorities="com.markfeldman.tasktrack"
+            android:exported="false" />
+
+        <activity android:name=".activities.SettingsActivity"></activity>
     </application>
 
 </manifest>
