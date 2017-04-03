@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.database.Cursor;
 import android.net.Uri;
+import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -112,12 +113,14 @@ public class PopUpUtilities {
                 Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
                 cvArr = addContentValues(boxesChecked);
                 context.getContentResolver().bulkInsert(checkedTasks,cvArr);
-                boxesChecked.clear();
+
                 if (SharedPreferencesUtility.areNotificationsEnabled(context)){
+                    sendMessage(context,boxesChecked);
                     Toast.makeText(context,"SAVED! TEXT NOTIFICATIONS ON",Toast.LENGTH_LONG).show();
                 }else{
                     Toast.makeText(context,"SAVED! TEXT NOTIFICATIONS OFF",Toast.LENGTH_LONG).show();
                 }
+                boxesChecked.clear();
 
             }
         }).setNeutralButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {
@@ -223,6 +226,30 @@ public class PopUpUtilities {
         return arrayList.toArray(new String[arrayList.size()]);
     }
 
+    public static void sendMessage(Context context,ArrayList<String> arrayList){
+        StringBuilder stringBuilder = new StringBuilder();
+        SmsManager smsM = SmsManager.getDefault();
+        for (int i = 0;i<arrayList.size(); i++){
+            stringBuilder.append(i + 1 + ". " +arrayList.get(i) +"\n");
+        }
+        Uri authority = DatabaseContract.ContactsContract.CONTENT_URI_CONTACTS;
+        Cursor contacts = context.getContentResolver().query(authority,null,null,null,null);
+
+
+        for (contacts.moveToFirst(); !contacts.isAfterLast(); contacts.moveToNext()){
+            String num = contacts.getString(contacts.getColumnIndex(DatabaseContract.ContactsContract.CONTACT_NUMBER));
+            smsM.sendTextMessage(num, null, "Hey, here is all I've done so far: \n" + stringBuilder + " at " + DateUtility.getCurrentTime(), null, null);
+            Log.v("TAG", "NUMBER ====== " + num + "\n");
+        }
+
+        if(contacts!=null){
+            contacts.close();
+        }
+    }
+
+
+    /*
+
     public static void addFakaData(Context context){
         ContentValues[] cvArr = new ContentValues[4];
 
@@ -253,4 +280,5 @@ public class PopUpUtilities {
         Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
         context.getContentResolver().bulkInsert(checkedTasks,cvArr);
     }
+    */
 }
