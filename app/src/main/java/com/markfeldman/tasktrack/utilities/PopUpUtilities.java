@@ -10,6 +10,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.Toast;
+
 import com.markfeldman.tasktrack.R;
 import com.markfeldman.tasktrack.database.DatabaseContract;
 import java.util.ArrayList;
@@ -111,6 +113,11 @@ public class PopUpUtilities {
                 cvArr = addContentValues(boxesChecked);
                 context.getContentResolver().bulkInsert(checkedTasks,cvArr);
                 boxesChecked.clear();
+                if (SharedPreferencesUtility.areNotificationsEnabled(context)){
+                    Toast.makeText(context,"SAVED! TEXT NOTIFICATIONS ON",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(context,"SAVED! TEXT NOTIFICATIONS OFF",Toast.LENGTH_LONG).show();
+                }
 
             }
         }).setNeutralButton("TODAY'S COMPLETED", new DialogInterface.OnClickListener() {

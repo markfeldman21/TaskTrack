@@ -4,7 +4,7 @@
     <CheckBoxPreference
         android:title="Send Completed Task To Contacts"
         android:defaultValue="true"
-        android:key="Enable Notificatioms"
+        android:key="@string/pref_enable_notifications_key"
         android:summaryOn="Enabled"
         android:summaryOff="Not Enabled">
 
