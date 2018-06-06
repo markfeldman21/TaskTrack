@@ -2,6 +2,7 @@ package com.markfeldman.tasktrack.activities;
 
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        toolbar.setTitleTextColor(Color.BLACK);
 
         fragments.addAll(Arrays.asList(new Tasks(),new Calendar(),new Contacts()));
         titles.addAll(Arrays.asList(getResources().getString(R.string.fragment_task_title),
@@ -57,10 +59,8 @@ public class MainActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager(),fragments,titles);
         viewPager.setAdapter(viewPagerAdapter);
         viewPager.setCurrentItem(1);
-
         tabLayout.setupWithViewPager(viewPager);
 
-        selectedFragment = new Home();
         if (savedInstanceState==null){
             if (getSupportActionBar()!=null){
                 getSupportActionBar().setDisplayShowTitleEnabled(true);
@@ -68,13 +68,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-
-    @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(INSTANCE_STATE_SAVE_TITLE, title);
-    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

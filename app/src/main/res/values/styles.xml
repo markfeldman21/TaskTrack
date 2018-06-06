@@ -13,7 +13,7 @@
 
     <style name="AppTabLayout" parent="Widget.Design.TabLayout">
         <item name="tabIndicatorColor">@android:color/white</item>
-        <item name="tabIndicatorHeight">4dp</item>
+        <item name="tabIndicatorHeight">6dp</item>
         <item name="android:background">@color/colorPrimaryTransparent</item>
         <item name="tabPaddingStart">6dp</item>
         <item name="tabPaddingEnd">6dp</item>
@@ -25,6 +25,10 @@
     <style name="AppTabTextAppearance" parent="TextAppearance.Design.Tab">
         <item name="android:textSize">18sp</item>
         <item name="android:textColor">@android:color/black</item>
+    </style>
+
+    <style name="MyActionBarTheme" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@android:color/black</item>
     </style>
 
 </resources>

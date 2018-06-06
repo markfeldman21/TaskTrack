@@ -40,7 +40,7 @@ public class Calendar extends Fragment {
         final TextView monthDisplay = (TextView)view.findViewById(R.id.displayMonth);
 
         //ADDFAKEDATA
-        //PopUpUtilities.addFakaData(getActivity());
+        PopUpUtilities.addFakaData(getActivity());
         Date firstDayofMonth = calendarView.getFirstDayOfCurrentMonth();
         monthDisplay.setText(simpleDateFormatMonth.format(firstDayofMonth));
 

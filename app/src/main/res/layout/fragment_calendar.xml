@@ -13,14 +13,19 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorAccent"
-        android:gravity="center_horizontal" />
+        android:gravity="center_horizontal"
+        android:textColor="@android:color/white"
+        android:textAppearance="@style/TextAppearance.AppCompat.Display1"/>
 
     <com.github.sundeepk.compactcalendarview.CompactCalendarView
         android:id="@+id/compactCalendar"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:compactCalendarBackgroundColor="@color/colorAccent"
-        app:compactCalendarTextSize="12sp"
+        app:compactCalendarTextSize="15sp"
+        app:compactCalendarTextColor="@android:color/black"
+        app:compactCalendarCurrentDayBackgroundColor="@android:color/white"
+        app:compactCalendarCurrentSelectedDayBackgroundColor="@color/colorPrimary"
         />
 
 

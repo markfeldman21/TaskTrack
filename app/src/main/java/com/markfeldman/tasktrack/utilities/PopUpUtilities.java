@@ -248,7 +248,7 @@ public class PopUpUtilities {
     }
 
 
-    /*
+
 
     public static void addFakaData(Context context){
         ContentValues[] cvArr = new ContentValues[4];
@@ -262,7 +262,7 @@ public class PopUpUtilities {
         ContentValues cv2 = new ContentValues();
         cv2.put(DatabaseContract.SelectedTasks.SELECTED_TASK, "SHAAAT");
         cv2.put(DatabaseContract.SelectedTasks.TIME_STAMP, "2 PM");
-        cv2.put(DatabaseContract.SelectedTasks.DATE_STAMP, "28/03/17");
+        cv2.put(DatabaseContract.SelectedTasks.DATE_STAMP, "26/03/17");
         cvArr[1] = cv2;
 
         ContentValues cv3 = new ContentValues();
@@ -280,5 +280,5 @@ public class PopUpUtilities {
         Uri checkedTasks = DatabaseContract.SelectedTasks.CONTENT_URI_SELECTED_TASKS;
         context.getContentResolver().bulkInsert(checkedTasks,cvArr);
     }
-    */
+
 }
